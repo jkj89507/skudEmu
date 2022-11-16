@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QGraphicsScene>
 #include <QTimer>
-#include "skudItem.h"
+#include "workItem.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -20,10 +20,13 @@ public:
 
 private slots:
     void on_addSkud_clicked();
+    void on_addSkud_2_clicked();
+    void on_addLine_clicked();
 
 private:
     Ui::Widget         *ui;
     QGraphicsScene  *scene;
     QTimer          *timer;
+    QList<WorkItem *> listAllItems;
 };
 #endif // WIDGET_H

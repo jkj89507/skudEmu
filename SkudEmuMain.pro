@@ -10,12 +10,12 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    skudItem.cpp \
-    widget.cpp
+    widget.cpp \
+    workItem.cpp
 
 HEADERS += \
-    skudItem.h \
-    widget.h
+    widget.h \
+    workItem.h
 
 FORMS += widget.ui
 
