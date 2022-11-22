@@ -10,7 +10,7 @@ Widget::Widget(QWidget *parent)
     this->resize(500, 550);
     this->setFixedSize(500, 550);
 
-    scene = new QGraphicsScene(this);
+    scene = new MyScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
 
     ui->graphicsView->setScene(scene);
@@ -26,6 +26,11 @@ Widget::Widget(QWidget *parent)
     scene->addLine(-250,0,250,0,QPen(Qt::red));   /// Добавляем горизонтальную линию через центр
     scene->addLine(0,250,0,-250,QPen(Qt::red));
 
+    modeName = "";
+    counterClick = 0;
+    connect(scene, &MyScene::signal_clickRelesed, this, &Widget::slot_readClick);
+    connect(scene, &MyScene::signal_clickRelesed, this, &Widget::slot_encreseCounter);
+
 //    timer = new QTimer();
 //    connect(timer, &QTimer::timeout, );
 //    timer->start(1000/50);
@@ -34,6 +39,20 @@ Widget::Widget(QWidget *parent)
 Widget::~Widget()
 {
     delete ui;
+}
+
+void Widget::slot_readClick()
+{
+    listPoints = scene->getLastClickResultsList();
+    for (int index = 0; index < listPoints.length(); ++index) {
+        qInfo() << index << " "
+                << "X: " << listPoints[index]["X"]
+                << "Y: " << listPoints[index]["Y"];
+    }
+    if (listPoints.length() > 10) {
+        listPoints.clear();
+        scene->clearClickResultsList();
+    }
 }
 
 void Widget::on_addSkud_clicked()
@@ -52,6 +71,19 @@ void Widget::on_addSkud_2_clicked()
 
 void Widget::on_addLine_clicked()
 {
-
+    modeName = "Line";
 }
 
+void Widget::slot_encreseCounter()
+{
+    counterClick++;
+    if (counterClick == 2 && modeName.endsWith("Line")) {
+        QPainter painter(this);
+        painter.setPen(QPen(Qt::black, 5, Qt::SolidLine, Qt::FlatCap));
+        qreal x1 = listPoints[listPoints.length()-2]["X"];
+        qreal y1 = listPoints[listPoints.length()-2]["Y"];
+        qreal x2 = listPoints[listPoints.length()-1]["X"];
+        qreal y2 = listPoints[listPoints.length()-1]["Y"];
+        painter.drawLine(0, 0, 200, 200);
+    }
+}
