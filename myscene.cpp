@@ -15,6 +15,7 @@ void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     QMap<QString, qreal> resultMap;
     qreal y_coord = event->scenePos().y();
     qreal x_coord = event->scenePos().x();
+    qInfo() << "X:" << x_coord << "Y:" << y_coord;
     QGraphicsScene::mousePressEvent(event);
     resultMap["Y"] = y_coord;
     resultMap["X"] = x_coord;

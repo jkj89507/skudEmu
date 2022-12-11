@@ -1,7 +1,7 @@
 #include "workItem.h"
 
-WorkItem::WorkItem(QObject *parent,  int width, int height, int color)
-    : QObject{parent}, QGraphicsItem(), width(width), height(height), color(color)
+WorkItem::  WorkItem(QObject *parent, QString idWorkItem, int width, int height, int color)
+    : QObject{parent}, QGraphicsItem(), idWorkItem(idWorkItem), width(width), height(height), color(color)
 {
 }
 
@@ -38,6 +38,11 @@ void WorkItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
             << QPoint((width/2), (height/2))
             << QPoint((-1) * (width/2), (height/2));
     switch (color) {
+        case 0:
+        {
+            painter->setBrush(QColor(3, 248, 252));
+            break;
+        }
         case 1:
         {
             painter->setBrush(Qt::green);
@@ -62,8 +67,7 @@ void WorkItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 void WorkItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     this->setPos(mapToScene(event->pos()));
-    qInfo() << "X:" << this->pos().x();
-    qInfo() << "Y:" << this->pos().y();
+    qInfo() << "X:" << this->pos().x() << "Y:" << this->pos().y();
 }
 
 void WorkItem::mousePressEvent(QGraphicsSceneMouseEvent *event)

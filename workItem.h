@@ -12,7 +12,9 @@ class WorkItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
 public:
-    WorkItem(QObject *parent = nullptr, int width = 30, int height = 30, int color = 1);
+    WorkItem(QObject *parent = nullptr, QString idWorkItem = "Dafault",
+             int width = 30, int height = 30,
+             int color = 1);
     ~WorkItem();
 
 signals:
@@ -22,6 +24,7 @@ public slots:
     void syncUpdateWithTimer();
 
 private:
+    QString idWorkItem;
     int width; //Параметр длины
     int height; //Пармаетр ширины
     int color; //Пармаетр цвета

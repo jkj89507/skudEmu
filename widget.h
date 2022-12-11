@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QPointF>
 #include <QPainter>
+#include <qmath.h>
 #include "myscene.h"
 #include "workItem.h"
 
@@ -29,6 +30,8 @@ private slots:
     void on_addSkud_2_clicked();
     void on_addLine_clicked();
     void slot_encreseCounter();
+    void slot_update_listItems();
+    void slot_update_spendTime();
 
 private:
     Ui::Widget              *ui;
@@ -37,6 +40,12 @@ private:
     QList<WorkItem *>       listAllItems;
     QList<QMap<QString, qreal>> listPoints;
     QString                 modeName;
+    quint64                 spendsSeconds;
+    QString                 spendTime;
     int                     counterClick;
+
+    void paintLine(qreal x1_coord, qreal y1_coord,
+                   qreal x2_coord, qreal y2_coord);
+    QString getTime();
 };
 #endif // WIDGET_H

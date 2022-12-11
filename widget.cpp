@@ -28,8 +28,13 @@ Widget::Widget(QWidget *parent)
 
     modeName = "";
     counterClick = 0;
+    spendsSeconds = 0;
+    timer = new QTimer();
     connect(scene, &MyScene::signal_clickRelesed, this, &Widget::slot_readClick);
     connect(scene, &MyScene::signal_clickRelesed, this, &Widget::slot_encreseCounter);
+    connect(timer, &QTimer::timeout, this, &Widget::slot_update_listItems);
+    connect(timer, &QTimer::timeout, this, &Widget::slot_update_spendTime);
+    timer->start(1000);
 
 //    timer = new QTimer();
 //    connect(timer, &QTimer::timeout, );
@@ -45,9 +50,9 @@ void Widget::slot_readClick()
 {
     listPoints = scene->getLastClickResultsList();
     for (int index = 0; index < listPoints.length(); ++index) {
-        qInfo() << index << " "
-                << "X: " << listPoints[index]["X"]
-                << "Y: " << listPoints[index]["Y"];
+//        qInfo() << index << " "
+//                << "X: " << listPoints[index]["X"]
+//                << "Y: " << listPoints[index]["Y"];
     }
     if (listPoints.length() > 10) {
         listPoints.clear();
@@ -57,14 +62,16 @@ void Widget::slot_readClick()
 
 void Widget::on_addSkud_clicked()
 {
-    WorkItem*   workItem = new WorkItem(nullptr, 50, 50, 1);
+    WorkItem*   workItem = new WorkItem(nullptr, "Skud_1", 50, 50, 1);
+    listAllItems.append(workItem);
     workItem->setPos(0, 0);
     scene->addItem(workItem);
 }
 
 void Widget::on_addSkud_2_clicked()
 {
-    WorkItem*   workItem = new WorkItem(nullptr, 60, 30, 2);
+    WorkItem*   workItem = new WorkItem(nullptr, "Skud_2", 60, 30, 2);
+    listAllItems.append(workItem);
     workItem->setPos(0, 0);
     scene->addItem(workItem);
 }
@@ -72,18 +79,91 @@ void Widget::on_addSkud_2_clicked()
 void Widget::on_addLine_clicked()
 {
     modeName = "Line";
+    counterClick = 0;
+    listPoints.clear();
+    qInfo() << "set mode: line";
 }
 
 void Widget::slot_encreseCounter()
 {
     counterClick++;
+    qInfo() << "counterClick: " << counterClick;
+
     if (counterClick == 2 && modeName.endsWith("Line")) {
-        QPainter painter(this);
-        painter.setPen(QPen(Qt::black, 5, Qt::SolidLine, Qt::FlatCap));
         qreal x1 = listPoints[listPoints.length()-2]["X"];
         qreal y1 = listPoints[listPoints.length()-2]["Y"];
         qreal x2 = listPoints[listPoints.length()-1]["X"];
         qreal y2 = listPoints[listPoints.length()-1]["Y"];
-        painter.drawLine(0, 0, 200, 200);
+        this->paintLine(x1, y1, x2, y2);
     }
+}
+
+void Widget::slot_update_listItems()
+{
+    if (listAllItems.size() > 0) {
+        for (int i = 0; i < listAllItems.size(); i++) {
+            qInfo() << listAllItems[i]->toolTip();
+        }
+    } else {
+        qInfo() << "No items";
+    }
+    qInfo() << "================" << this->getTime() << "================";
+}
+
+void Widget::slot_update_spendTime()
+{
+    spendsSeconds++;
+    qInfo() << spendsSeconds << "s";
+}
+
+void Widget::paintLine(qreal x1_coord, qreal y1_coord,
+                       qreal x2_coord, qreal y2_coord)
+{
+    int width = qFabs(x2_coord - x1_coord);
+    int height = qFabs(y2_coord - y1_coord);
+    int agileRotateGrad = -90 + qSin(width/height)/(3.14/180);
+    WorkItem *lineItem;
+    if (width >= height) {
+        lineItem = new WorkItem(nullptr, "Line", width, 6, 0);
+        lineItem->setPos(x1_coord + width/2, y1_coord + 3);
+        lineItem->setTransform(QTransform().translate(x1_coord - width/2, y1_coord)
+                                            .rotate(agileRotateGrad)
+                                            .translate(-1 * (x1_coord - width/2), -1 * y1_coord));
+    } else {
+        lineItem = new WorkItem(nullptr, "Line", 6, height, 0);
+        lineItem->setPos(x1_coord + 3, y1_coord + height/2);
+        lineItem->setTransform(QTransform().translate(x1_coord, y1_coord - height/2)
+                                            .rotate(agileRotateGrad)
+                                            .translate(-1 * x1_coord , -1 * (y1_coord - height/2)));
+    }
+    modeName = "";
+    counterClick = 0;
+    listPoints.clear();
+    qInfo() << "set mode: empty";
+    listAllItems.append(lineItem);
+    scene->addItem(lineItem);
+}
+
+QString Widget::getTime()
+{
+    int sec = spendsSeconds % 60;
+    int min = floor(spendsSeconds / 60);
+    int hours = floor(spendsSeconds / 3600);
+    QString result = "";
+    if (hours < 10) {
+        result += "0" + QString::number(hours) + ":";
+    } else {
+        result += QString::number(hours) + ":";
+    }
+    if (min < 10) {
+        result += "0" + QString::number(min) + ":";
+    } else {
+        result += QString::number(min) + ":";
+    }
+    if (sec < 10) {
+        result += "0" + QString::number(sec);
+    } else {
+        result += QString::number(sec);
+    }
+    return result;
 }
