@@ -9,14 +9,14 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    connectorLineItem.cpp \
+    connItem.cpp \
     main.cpp \
     myscene.cpp \
     widget.cpp \
     workItem.cpp
 
 HEADERS += \
-    connectorLineItem.h \
+    connItem.h \
     myscene.h \
     widget.h \
     workItem.h

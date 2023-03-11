@@ -1,7 +1,12 @@
 #include "workItem.h"
 
-WorkItem::  WorkItem(QObject *parent, QString idWorkItem, int width, int height, int color)
-    : QObject{parent}, QGraphicsItem(), idWorkItem(idWorkItem), width(width), height(height), color(color)
+WorkItem::WorkItem(QObject *parent, QString idWorkItem,
+                   int width, int height,
+                   int color, bool isRemovable)
+    : QObject{parent}, QGraphicsItem(),
+      idWorkItem(idWorkItem), width(width),
+      height(height), color(color),
+      isRemovable(isRemovable)
 {
 }
 
@@ -9,20 +14,32 @@ WorkItem::~WorkItem()
 {
 }
 
+QMap<QString, qreal> WorkItem::getPositionItem()
+{
+    return positionItem;
+}
+
+QString WorkItem::getName()
+{
+    return idWorkItem;
+}
+
+
 void WorkItem::syncUpdateWithTimer()
 {
-    QList<QGraphicsItem *> itemsInActiveArea = scene()->items(
-                QPolygonF() << mapToScene((-1) * (width/2) - 15, (-1) * (height/2) + 15)
-                << mapToScene((width/2) + 15, (-1) * (height/2) - 15)
-                << mapToScene((width/2) + 15, (height/2) + 15)
-                << mapToScene((-1) * (width/2) - 15, (height/2) + 15));
+    //Получить элементы находящиееся в определенной области видимости
+//    QList<QGraphicsItem *> itemsInActiveArea = scene()->items(
+//                QPolygonF() << mapToScene((-1) * (width/2) - 15, (-1) * (height/2) + 15)
+//                << mapToScene((width/2) + 15, (-1) * (height/2) - 15)
+//                << mapToScene((width/2) + 15, (height/2) + 15)
+//                << mapToScene((-1) * (width/2) - 15, (height/2) + 15));
 
-    foreach (QGraphicsItem* itemInActiveArea, itemsInActiveArea) {
-        if (itemInActiveArea == this) {
-            continue;
-        }
-        emit signalWtfItem(itemInActiveArea);
-    }
+//    foreach (QGraphicsItem* itemInActiveArea, itemsInActiveArea) {
+//        if (itemInActiveArea == this) {
+//            continue;
+//        }
+//        emit signalWtfItem(itemInActiveArea);
+//    }
 }
 
 QRectF WorkItem::boundingRect() const
@@ -45,12 +62,25 @@ void WorkItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
         }
         case 1:
         {
+        // Цвет СКУД
             painter->setBrush(Qt::green);
             break;
         }
         case 2:
         {
             painter->setBrush(Qt::blue);
+            break;
+        }
+        case 3:
+        {
+        // Цвет Активной точки
+            painter->setBrush(Qt::white);
+            break;
+        }
+        case 4:
+        {
+        // Цвет Коннектора точку
+            painter->setBrush(Qt::darkCyan);
             break;
         }
         default:
@@ -66,8 +96,11 @@ void WorkItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
 void WorkItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    this->setPos(mapToScene(event->pos()));
-    qInfo() << "X:" << this->pos().x() << "Y:" << this->pos().y();
+//    if (isRemovable) {
+//        this->setPos(mapToScene(event->pos()));
+//        qInfo() << "X:" << this->pos().x() << "Y:" << this->pos().y();
+//    }
+
 }
 
 void WorkItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -75,8 +108,14 @@ void WorkItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     /* При нажатии мышью на графический элемент
      * заменяем курсор на руку, которая держит этот элемента
      * */
-    this->setCursor(QCursor(Qt::ClosedHandCursor));
-    Q_UNUSED(event);
+    positionItem["Y"] = this->y();
+    positionItem["X"] = this->x();
+    emit sentItem(this);
+//    if (isRemovable) {
+//        this->setCursor(QCursor(Qt::ClosedHandCursor));
+//        Q_UNUSED(event);
+//    }
+
 }
 
 void WorkItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
@@ -84,6 +123,9 @@ void WorkItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     /* При отпускании мышью элемента
      * заменяем на обычный курсор стрелку
      * */
-    this->setCursor(QCursor(Qt::ArrowCursor));
-    Q_UNUSED(event);
+    if (isRemovable) {
+        this->setCursor(QCursor(Qt::ArrowCursor));
+        Q_UNUSED(event);
+    }
+
 }
