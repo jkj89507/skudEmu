@@ -11,15 +11,41 @@ ConnItem::~ConnItem()
 {
 }
 
+QMap<QString, qreal> ConnItem::getPositionItem()
+{
+    return positionItem;
+}
+
 void ConnItem::setMyOwnerWorkItem(WorkItem* owner) {
     myOwner = owner;
 }
 
-void ConnItem::getMyNeighbour(ConnItem* neighbour) {
+void ConnItem::setMyNeighbour(ConnItem* neighbour) {
     myNeighbour = neighbour;
+}
+
+ConnItem* ConnItem::getMyNeighbour() {
+    return myNeighbour;
 }
 
 WorkItem* ConnItem::getOwner() {
     return myOwner;
 }
+
+void ConnItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    /* При нажатии мышью на графический элемент
+     * заменяем курсор на руку, которая держит этот элемента
+     * */
+    positionItem["Y"] = this->y();
+    positionItem["X"] = this->x();
+    qInfo() << "mousePressEvent Y: " << this->y() << " X: " << this->x();
+    emit sentConnItem(this);
+//    if (isRemovable) {
+//        this->setCursor(QCursor(Qt::ClosedHandCursor));
+//        Q_UNUSED(event);
+//    }
+
+}
+
 

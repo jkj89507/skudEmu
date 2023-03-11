@@ -55,6 +55,7 @@ void WorkItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
             << QPoint((width/2), (height/2))
             << QPoint((-1) * (width/2), (height/2));
     switch (color) {
+        // Цвет линии
         case 0:
         {
             painter->setBrush(QColor(3, 248, 252));
@@ -110,6 +111,7 @@ void WorkItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
      * */
     positionItem["Y"] = this->y();
     positionItem["X"] = this->x();
+    qInfo() << "mousePressEvent Y: " << this->y() << " X: " << this->x();
     emit sentItem(this);
 //    if (isRemovable) {
 //        this->setCursor(QCursor(Qt::ClosedHandCursor));

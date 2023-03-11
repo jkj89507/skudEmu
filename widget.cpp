@@ -42,7 +42,6 @@ Widget::Widget(QWidget *parent)
     timer = new QTimer();
     connect(scene, &MyScene::signal_clickRelesed, this, &Widget::slot_readClick);
     connect(scene, &MyScene::signal_clickRelesed, this, &Widget::slot_encreseCounter);
-    connect(timer, &QTimer::timeout, this, &Widget::slot_update_listItems);
     connect(timer, &QTimer::timeout, this, &Widget::slot_update_spendTime);
     timer->start(1000);
 }
@@ -79,27 +78,18 @@ void Widget::on_addLine_clicked()
 void Widget::slot_encreseCounter()
 {
     counterClick++;
-    qInfo() << "counterClick: " << counterClick;
-
-//    if (counterClick == 2 && modeName.endsWith("Line")) {
-//        qreal x1 = listPoints[listPoints.length()-2]["X"];
-//        qreal y1 = listPoints[listPoints.length()-2]["Y"];
-//        qreal x2 = listPoints[listPoints.length()-1]["X"];
-//        qreal y2 = listPoints[listPoints.length()-1]["Y"];
-//        this->paintLine(x1, y1, x2, y2);
-//    }
-}
-
-void Widget::slot_update_listItems()
-{
-//    if (listAllItems.size() > 0) {
-//        for (int i = 0; i < listAllItems.size(); i++) {
-//            qInfo() << listAllItems[i]->toolTip();
-//        }
-//    } else {
-//        qInfo() << "No items";
-//    }
-//    qInfo() << "================" << this->getTime() << "================";
+    qInfo() << "counterClick: " << counterClick << "mode name: " << modeName;
+    if (counterClick == 2 && modeName.endsWith("Line")) {
+        qreal x1 = listLastConnectors[listLastConnectors.length()-2]->getPositionItem()["X"];
+        qreal y1 = listLastConnectors[listLastConnectors.length()-2]->getPositionItem()["Y"];
+        qreal x2 = listLastConnectors[listLastConnectors.length()-1]->getPositionItem()["X"];
+        qreal y2 = listLastConnectors[listLastConnectors.length()-1]->getPositionItem()["Y"];
+        listLastConnectors[listLastConnectors.length()-2]->setMyNeighbour(listLastConnectors[listLastConnectors.length()-1]);
+        qInfo() << listLastConnectors[listLastConnectors.length()-2]->getMyNeighbour()->getName();
+        listLastConnectors[listLastConnectors.length()-1]->setMyNeighbour(listLastConnectors[listLastConnectors.length()-2]);
+        this->paintLine(x1, y1, x2, y2);
+        modeName = "Choose";
+    }
 }
 
 void Widget::slot_update_spendTime()
@@ -108,29 +98,28 @@ void Widget::slot_update_spendTime()
 //    qInfo() << spendsSeconds << "s";
 }
 
-//void Widget::slot_update_checkConnect()
-//{
-//    if (listAllItems.size() > 0) {
-//            for (int i = 0; i < listAllItems.size(); i++) {
-//                qInfo() << listAllItems[i];
-//            }
-//        } else {
-//            qInfo() << "No items";
-//        }
-////    qInfo() << "================" << this->getTime() << "================";
-//}
-
 void Widget::getItem(WorkItem* workItem)
 {
-    saveLastCkickItem = workItem;
+    saveLastClickItem = workItem;
     modeName = "Choose";
+}
+
+void Widget::getConnItem(ConnItem* connItem)
+{
+    saveLastClickItem = connItem;
+    if (saveLastClickItem->getName().contains("Connector")) {
+        listLastConnectors.append(connItem);
+        modeName = "Line";
+    } else {
+        modeName = "Choose";
+    }
 }
 
 void Widget::setActiveItem(WorkItem* item)
 {
-    if (modeName.endsWith("Choose") && listAllItems.indexOf(saveLastCkickItem) != -1)
+    if (modeName.endsWith("Choose") && listAllItems.indexOf(saveLastClickItem) != -1)
     {
-        int lastClickItemIndex = listAllItems.indexOf(saveLastCkickItem);
+        int lastClickItemIndex = listAllItems.indexOf(saveLastClickItem);
         WorkItem* temp = listAllItems[lastClickItemIndex];
         this->redraw();
         item->setPos(temp->x(), temp->y());
@@ -162,7 +151,9 @@ void Widget::setConnectorsPoint(WorkItem* item)
     int currentIndexItem = this->getNumberItemFromList(item);
     if (currentIndexItem - amountOfItemsInRow >= 0) {
         WorkItem* temp = listAllItems[currentIndexItem - amountOfItemsInRow];
+        disconnect(temp, &WorkItem::sentItem, this, &Widget::getItem);
         ConnItem* connectorItem = new ConnItem(nullptr, "Connector", 10, 10, 4, false);
+        connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
         connectorItem->setMyOwnerWorkItem(item);
         connectorItem->setPos(temp->x(), temp->y());
         listAllItems[currentIndexItem - amountOfItemsInRow] = connectorItem;
@@ -170,7 +161,9 @@ void Widget::setConnectorsPoint(WorkItem* item)
     }
     if (currentIndexItem + amountOfItemsInRow <= listAllItems.length()) {
         WorkItem* temp = listAllItems[currentIndexItem + amountOfItemsInRow];
+        disconnect(temp, &WorkItem::sentItem, this, &Widget::getItem);
         ConnItem* connectorItem = new ConnItem(nullptr, "Connector", 10, 10, 4, false);
+        connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
         connectorItem->setMyOwnerWorkItem(item);
         connectorItem->setPos(temp->x(), temp->y());
         listAllItems[currentIndexItem + amountOfItemsInRow] = connectorItem;
@@ -178,7 +171,9 @@ void Widget::setConnectorsPoint(WorkItem* item)
     }
     if (currentIndexItem - 1 >= 0) {
         WorkItem* temp = listAllItems[currentIndexItem - 1];
+        disconnect(temp, &WorkItem::sentItem, this, &Widget::getItem);
         ConnItem* connectorItem = new ConnItem(nullptr, "Connector", 10, 10, 4, false);
+        connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
         connectorItem->setMyOwnerWorkItem(item);
         connectorItem->setPos(temp->x(), temp->y());
         listAllItems[currentIndexItem - 1] = connectorItem;
@@ -186,12 +181,42 @@ void Widget::setConnectorsPoint(WorkItem* item)
     }
     if (currentIndexItem + 1 <= listAllItems.length()) {
         WorkItem* temp = listAllItems[currentIndexItem + 1];
+        disconnect(temp, &WorkItem::sentItem, this, &Widget::getItem);
         ConnItem* connectorItem = new ConnItem(nullptr, "Connector", 10, 10, 4, false);
+        connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
         connectorItem->setMyOwnerWorkItem(item);;
         connectorItem->setPos(temp->x(), temp->y());
         listAllItems[currentIndexItem + 1] = connectorItem;
         scene->addItem(connectorItem);
     }
+}
+
+void Widget::paintLine(qreal x1_coord, qreal y1_coord,
+                       qreal x2_coord, qreal y2_coord)
+{
+    int width = qFabs(x2_coord - x1_coord);
+    int height = qFabs(y2_coord - y1_coord);
+    WorkItem *lineItem;
+    if (width >= height) {
+        lineItem = new WorkItem(nullptr, "Line", width, 6, 0);
+        lineItem->setPos(x1_coord + width/2, y1_coord);
+        lineItem->setTransform(QTransform().translate(x1_coord - width/2, y1_coord)
+                                            .rotate(0)
+                                            .translate(-1 * (x1_coord - width/2), -1 * y1_coord));
+    } else {
+        lineItem = new WorkItem(nullptr, "Line", 6, height, 0);
+        lineItem->setPos(x1_coord, y1_coord + height/2);
+        lineItem->setTransform(QTransform().translate(x1_coord, y1_coord - height/2)
+                                            .rotate(0)
+                                            .translate(-1 * x1_coord , -1 * (y1_coord - height/2)));
+    }
+    modeName = "";
+    counterClick = 0;
+    listPoints.clear();
+    qInfo() << "set mode: empty";
+    listAllItems.append(lineItem);
+    scene->addItem(lineItem);
+    this->redraw();
 }
 
 
@@ -231,9 +256,4 @@ void Widget::drawWorkplace()
 void Widget::redraw()
 {
     scene->update();
-//    scene->clear();
-//    this->drawWorkplace();
-//    for (auto i : listAllItems) {
-//        scene->addItem(i);
-//    }
 }

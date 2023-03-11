@@ -9,6 +9,7 @@
 #include <qmath.h>
 #include "myscene.h"
 #include "workItem.h"
+#include "connItem.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -26,13 +27,13 @@ public:
 public slots:
     void slot_readClick();
     void getItem(WorkItem* workItem);
+    void getConnItem(ConnItem* connItem);
 
 private slots:
     void on_addSkud_clicked();
 //    void on_addSkud_2_clicked();
     void on_addLine_clicked();
     void slot_encreseCounter();
-    void slot_update_listItems();
     void slot_update_spendTime();
 
 private:
@@ -48,10 +49,12 @@ private:
     quint64                 spendsSeconds;
     QString                 spendTime;
     int                     counterClick;
-    WorkItem*               saveLastCkickItem;
+    WorkItem*               saveLastClickItem;
+    ConnItem*               saveLastClickConnItem;
+    QList<ConnItem *>       listLastConnectors;
 
-//    void paintLine(qreal x1_coord, qreal y1_coord,
-//                   qreal x2_coord, qreal y2_coord);
+    void paintLine(qreal x1_coord, qreal y1_coord,
+                   qreal x2_coord, qreal y2_coord);
     QString getTime();
     void setActiveItem(WorkItem* item);
     int getNumberItemFromList(WorkItem* item);
