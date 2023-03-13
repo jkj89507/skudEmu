@@ -18,10 +18,12 @@ public:
     ~WorkItem();
     QMap<QString, qreal> getPositionItem();
     QString getName();
+    void getMessage(QString message);
 
 signals:
     void signalWtfItem(QGraphicsItem* item);
     void sentItem(WorkItem* workItem);
+    void sentMessage(QString message);
 
 public slots:
     void syncUpdateWithTimer();

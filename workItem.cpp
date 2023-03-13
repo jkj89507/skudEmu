@@ -24,6 +24,11 @@ QString WorkItem::getName()
     return idWorkItem;
 }
 
+void WorkItem::getMessage(QString message)
+{
+    qInfo() << idWorkItem << " getMessage: " << message;
+}
+
 
 void WorkItem::syncUpdateWithTimer()
 {
@@ -113,6 +118,8 @@ void WorkItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     positionItem["X"] = this->x();
     qInfo() << "mousePressEvent Y: " << this->y() << " X: " << this->x();
     emit sentItem(this);
+    qInfo() << this->getName() << " sent Message";
+    emit sentMessage("Hello from " + this->getName());
 //    if (isRemovable) {
 //        this->setCursor(QCursor(Qt::ClosedHandCursor));
 //        Q_UNUSED(event);

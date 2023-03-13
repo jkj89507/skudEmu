@@ -32,6 +32,12 @@ WorkItem* ConnItem::getOwner() {
     return myOwner;
 }
 
+void ConnItem::getMessageForSent(QString message)
+{
+     myOwner->getMessage(message);
+}
+
+
 void ConnItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     /* При нажатии мышью на графический элемент

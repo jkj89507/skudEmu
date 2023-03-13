@@ -10,6 +10,7 @@
 #include "myscene.h"
 #include "workItem.h"
 #include "connItem.h"
+#include "buffer.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -58,6 +59,7 @@ private:
     QString getTime();
     void setActiveItem(WorkItem* item);
     int getNumberItemFromList(WorkItem* item);
+    int getNumberOfWorkItem(QString searchElement);
     void setConnectorsPoint(WorkItem* item);
     void drawWorkplace();
     void redraw();

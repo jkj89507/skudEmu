@@ -1,7 +1,7 @@
 #ifndef CONNITEM_H
 #define CONNITEM_H
 
-#include <workItem.h>
+#include "workItem.h"
 
 class ConnItem : public WorkItem
 {
@@ -22,6 +22,7 @@ public slots:
 //    void getMyNeighbour(ConnItem* neighbour);
 //    void getMessageFromWorkItem(QString message);
 //    void getMessageFromAnotherConnItem(QString message);
+    void getMessageForSent(QString message);
 
 signals:
 //    void sentMessageToWorkItem(QString message);
@@ -32,7 +33,9 @@ private:
     WorkItem*       myOwner;
     ConnItem*       myNeighbour;
     QMap<QString, qreal> positionItem;
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    QString         message;
+    void            mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void            setMessage(QString message);
 };
 
 #endif // ACTIVEITEM_H
