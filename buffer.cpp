@@ -39,5 +39,6 @@ void Buffer::setWorkItem(WorkItem* workItem)
 }
 
 void Buffer::getAccessToSendMessage(QString message) {
+    qInfo() << "Buffer get message: " << message;
     emit sentMessageToConnItem(message);
 }

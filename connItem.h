@@ -28,6 +28,7 @@ signals:
 //    void sentMessageToWorkItem(QString message);
 //    void sentMessageToAnotherConnItem(QString message);
     void sentConnItem(ConnItem* connItem);
+//    void sentMessage(QString message);
 
 private:
     WorkItem*       myOwner;

@@ -34,7 +34,7 @@ WorkItem* ConnItem::getOwner() {
 
 void ConnItem::getMessageForSent(QString message)
 {
-     myOwner->getMessage(message);
+    myNeighbour->myOwner->getMessage(message);
 }
 
 

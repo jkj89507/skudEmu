@@ -28,7 +28,7 @@ Widget::Widget(QWidget *parent)
     amountOfItemsInRow = (sceneSize - 10) / 40;
     for (int rowIndex = 10; rowIndex < sceneSize; rowIndex += 40) {
         for (int columnIndex = 10; columnIndex < sceneSize; columnIndex += 40) {
-            WorkItem* tempWorkItem = new WorkItem(nullptr, "Active_" + getNumberOfWorkItem("Active_"), 10, 10, 3, false);
+            WorkItem* tempWorkItem = new WorkItem(nullptr, "Active_" + QString::number(getNumberOfWorkItem("Active_")), 10, 10, 3, false);
             tempWorkItem->setPos(columnIndex, rowIndex);
             listAllItems.append(tempWorkItem);
             connect(tempWorkItem, &WorkItem::sentItem, this, &Widget::getItem);
@@ -62,7 +62,7 @@ void Widget::slot_readClick()
 
 void Widget::on_addSkud_clicked()
 {
-    WorkItem*   workItem = new WorkItem(nullptr, "Skud_1" + + getNumberOfWorkItem("Skud_1"), 50, 50, 1);
+    WorkItem*   workItem = new WorkItem(nullptr, "Skud_1" + QString::number(getNumberOfWorkItem("Skud_1")), 50, 50, 1);
     this->setActiveItem(workItem);
 }
 
@@ -84,8 +84,8 @@ void Widget::slot_encreseCounter()
         qreal x2 = listLastConnectors[listLastConnectors.length()-1]->getPositionItem()["X"];
         qreal y2 = listLastConnectors[listLastConnectors.length()-1]->getPositionItem()["Y"];
         listLastConnectors[listLastConnectors.length()-2]->setMyNeighbour(listLastConnectors[listLastConnectors.length()-1]);
-        connect(listLastConnectors[listLastConnectors.length()-2], &ConnItem::getMessage,
-                listLastConnectors[listLastConnectors.length()-1], &ConnItem::getMessageForSent);
+//        connect(listLastConnectors[listLastConnectors.length()-2], &ConnItem::sentMessage,
+//                listLastConnectors[listLastConnectors.length()-1], &ConnItem::getMessageForSent);
         listLastConnectors[listLastConnectors.length()-1]->setMyNeighbour(listLastConnectors[listLastConnectors.length()-2]);
         this->paintLine(x1, y1, x2, y2);
         modeName = "Choose";
@@ -152,10 +152,7 @@ int Widget::getNumberOfWorkItem(QString searchElement)
                 number++;
             }
         }
-    } else {
-        return 0;
     }
-
     return number;
 }
 
@@ -174,8 +171,8 @@ void Widget::setConnectorsPoint(WorkItem* item)
         ConnItem* connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Up",
                                                10, 10,
                                                4, false);
+//        connect(buffer, &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
         connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
-        connect(buffer, &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
         connectorItem->setMyOwnerWorkItem(item);
         connectorItem->setPos(temp->x(), temp->y());
         listAllItems[currentIndexItem - amountOfItemsInRow] = connectorItem;
@@ -187,6 +184,7 @@ void Widget::setConnectorsPoint(WorkItem* item)
         ConnItem* connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Down",
                                                10, 10,
                                                4, false);
+//        connect(buffer, &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
         connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
         connectorItem->setMyOwnerWorkItem(item);
         connectorItem->setPos(temp->x(), temp->y());
@@ -199,6 +197,7 @@ void Widget::setConnectorsPoint(WorkItem* item)
         ConnItem* connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Left",
                                                10, 10,
                                                4, false);
+//        connect(buffer, &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
         connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
         connectorItem->setMyOwnerWorkItem(item);
         connectorItem->setPos(temp->x(), temp->y());
@@ -211,6 +210,7 @@ void Widget::setConnectorsPoint(WorkItem* item)
         ConnItem* connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Right",
                                                10, 10,
                                                4, false);
+        connect(buffer, &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
         connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
         connectorItem->setMyOwnerWorkItem(item);;
         connectorItem->setPos(temp->x(), temp->y());
@@ -226,21 +226,21 @@ void Widget::paintLine(qreal x1_coord, qreal y1_coord,
     int height = qFabs(y2_coord - y1_coord);
     WorkItem *lineItem;
     if (width >= height) {
-        lineItem = new WorkItem(nullptr, "Line_" + getNumberOfWorkItem("Line"),
+        lineItem = new WorkItem(nullptr, "Line_" + QString::number(getNumberOfWorkItem("Line")),
                                 width, 6,
                                 0);
         lineItem->setPos(x1_coord + width/2, y1_coord);
-        lineItem->setTransform(QTransform().translate(x1_coord - width/2, y1_coord)
-                                            .rotate(0)
-                                            .translate(-1 * (x1_coord - width/2), -1 * y1_coord));
+        if (x1_coord >= x2_coord) {
+            lineItem->setTransform(QTransform().translate((width) * -1, 0));
+        }
     } else {
-        lineItem = new WorkItem(nullptr, "Line_" + getNumberOfWorkItem("Line"),
+        lineItem = new WorkItem(nullptr, "Line_" + QString::number(getNumberOfWorkItem("Line")),
                                 6, height,
                                 0);
         lineItem->setPos(x1_coord, y1_coord + height/2);
-        lineItem->setTransform(QTransform().translate(x1_coord, y1_coord - height/2)
-                                            .rotate(0)
-                                            .translate(-1 * x1_coord , -1 * (y1_coord - height/2)));
+        if (y1_coord >= y2_coord) {
+            lineItem->setTransform(QTransform().translate(0, (height) * -1));
+        }
     }
     modeName = "";
     counterClick = 0;
