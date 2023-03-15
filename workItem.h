@@ -7,6 +7,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
+#include "buffer.h"
 
 class WorkItem : public QObject, public QGraphicsItem
 {
@@ -19,6 +20,8 @@ public:
     QMap<QString, qreal> getPositionItem();
     QString getName();
     void getMessage(QString message);
+    void setBuffer(Buffer* buffer);
+    Buffer* getBuffer();
 
 signals:
     void signalWtfItem(QGraphicsItem* item);
@@ -37,6 +40,7 @@ private:
     bool            isRemovable; //Возможность перетаксивать
     QRectF          boundingRect() const; //Отрисовка границ
     QMap<QString, qreal> positionItem;
+    Buffer*         buffer;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget); //Отрисовка элемента
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event); //Событие перетаскивание мышкой элемента
     void mousePressEvent(QGraphicsSceneMouseEvent *event); //Событие нажатие мышкой на элемент

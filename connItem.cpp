@@ -34,7 +34,10 @@ WorkItem* ConnItem::getOwner() {
 
 void ConnItem::getMessageForSent(QString message)
 {
-    myNeighbour->myOwner->getMessage(message);
+    if (myNeighbour != nullptr) {
+        myNeighbour->myOwner->getMessage(message);
+    }
+
 }
 
 

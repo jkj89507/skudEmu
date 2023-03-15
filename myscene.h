@@ -5,6 +5,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QDebug>
+#include <QPixmap>
 
 class MyScene: public QGraphicsScene
 {

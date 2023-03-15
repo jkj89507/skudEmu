@@ -15,6 +15,7 @@ Widget::Widget(QWidget *parent)
     this->setFixedSize(700, 700);
 
     scene = new MyScene(this);
+    scene->clear();
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
     scene->setSceneRect(0, 0, sceneSize, sceneSize);
 
@@ -87,6 +88,7 @@ void Widget::slot_encreseCounter()
 //        connect(listLastConnectors[listLastConnectors.length()-2], &ConnItem::sentMessage,
 //                listLastConnectors[listLastConnectors.length()-1], &ConnItem::getMessageForSent);
         listLastConnectors[listLastConnectors.length()-1]->setMyNeighbour(listLastConnectors[listLastConnectors.length()-2]);
+        listLastConnectors.clear();
         this->paintLine(x1, y1, x2, y2);
         modeName = "Choose";
     }
@@ -162,16 +164,15 @@ void Widget::setConnectorsPoint(WorkItem* item)
     // Баг: при установке в активную точку элемента в конце ряда -
     // устанавливает коннектор в начале следующего ряда
     int currentIndexItem = this->getNumberItemFromList(item);
-    Buffer* buffer = new Buffer();
-    buffer->setWorkItem(item);
-    connect(item, &WorkItem::sentMessage, buffer, &Buffer::getAccessToSendMessage);
+    item->setBuffer(new Buffer());
+    connect(item, &WorkItem::sentMessage, item->getBuffer(), &Buffer::getAccessToSendMessage);
     if (currentIndexItem - amountOfItemsInRow >= 0) {
         WorkItem* temp = listAllItems[currentIndexItem - amountOfItemsInRow];
         disconnect(temp, &WorkItem::sentItem, this, &Widget::getItem);
         ConnItem* connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Up",
                                                10, 10,
                                                4, false);
-//        connect(buffer, &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
+        connect(item->getBuffer(), &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
         connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
         connectorItem->setMyOwnerWorkItem(item);
         connectorItem->setPos(temp->x(), temp->y());
@@ -184,7 +185,7 @@ void Widget::setConnectorsPoint(WorkItem* item)
         ConnItem* connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Down",
                                                10, 10,
                                                4, false);
-//        connect(buffer, &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
+        connect(item->getBuffer(), &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
         connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
         connectorItem->setMyOwnerWorkItem(item);
         connectorItem->setPos(temp->x(), temp->y());
@@ -197,7 +198,7 @@ void Widget::setConnectorsPoint(WorkItem* item)
         ConnItem* connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Left",
                                                10, 10,
                                                4, false);
-//        connect(buffer, &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
+        connect(item->getBuffer(), &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
         connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
         connectorItem->setMyOwnerWorkItem(item);
         connectorItem->setPos(temp->x(), temp->y());
@@ -210,7 +211,7 @@ void Widget::setConnectorsPoint(WorkItem* item)
         ConnItem* connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Right",
                                                10, 10,
                                                4, false);
-        connect(buffer, &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
+        connect(item->getBuffer(), &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
         connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
         connectorItem->setMyOwnerWorkItem(item);;
         connectorItem->setPos(temp->x(), temp->y());

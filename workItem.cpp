@@ -47,6 +47,16 @@ void WorkItem::syncUpdateWithTimer()
 //    }
 }
 
+void WorkItem::setBuffer(Buffer* buffer)
+{
+    this->buffer = buffer;
+}
+
+Buffer* WorkItem::getBuffer()
+{
+    return this->buffer;
+}
+
 QRectF WorkItem::boundingRect() const
 {
     return QRectF(QPointF((-1) * (width/2), (-1) * (height/2)), QSizeF(width, height));
