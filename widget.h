@@ -40,7 +40,8 @@ private slots:
 private:
     Ui::Widget              *ui;
     MyScene                 *scene;
-    int sceneSize           = 650;
+    int sceneSizeWidth      = 1210;
+    int sceneSizeHeight     = 690;
     int amountOfItemsInRow  = 0;
     QTimer                  *timer;
     QMap<int, WorkItem*>    mapAccessByNumber;

@@ -10,25 +10,24 @@ Widget::Widget(QWidget *parent)
 
     ui->setupUi(this);
     listAllItems.clear();
-
-    this->resize(700, 700);
-    this->setFixedSize(700, 700);
-
     scene = new MyScene(this);
     scene->clear();
-    scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene->setSceneRect(0, 0, sceneSize, sceneSize);
+    QString path = "C:/Qt/workplace/skudEmu/wall.jpg"; // path to background image
+    QPixmap backgroundImage(path);
+    QBrush backgroundBrush(backgroundImage);
+    scene->setBackgroundBrush(backgroundBrush);
 
-    ui->graphicsView->setScene(scene);
     ui->graphicsView->setRenderHint(QPainter::Antialiasing);
+    ui->graphicsView->setRenderHint(QPainter::SmoothPixmapTransform);
+    ui->graphicsView->setScene(scene);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff); /// Отключаем скроллбар по вертикали
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     this->drawWorkplace();
 
-    amountOfItemsInRow = (sceneSize - 10) / 40;
-    for (int rowIndex = 10; rowIndex < sceneSize; rowIndex += 40) {
-        for (int columnIndex = 10; columnIndex < sceneSize; columnIndex += 40) {
+    amountOfItemsInRow = (sceneSizeWidth - 10) / 40;
+    for (int rowIndex = 10; rowIndex < sceneSizeHeight; rowIndex += 40) {
+        for (int columnIndex = 10; columnIndex < sceneSizeWidth; columnIndex += 40) {
             WorkItem* tempWorkItem = new WorkItem(nullptr, "Active_" + QString::number(getNumberOfWorkItem("Active_")), 10, 10, 3, false);
             tempWorkItem->setPos(columnIndex, rowIndex);
             listAllItems.append(tempWorkItem);
@@ -280,9 +279,11 @@ QString Widget::getTime()
 void Widget::drawWorkplace()
 {
     /*Draw lines*/
-    for (int x = 10; x < 650; x+=40) {
-        scene->addLine(x,10,x,sceneSize - 40,QPen(Qt::black));
-        scene->addLine(10,x,sceneSize - 40,x,QPen(Qt::black));
+    for (int y = 10; y < sceneSizeHeight; y += 40) {
+        scene->addLine(10, y, sceneSizeWidth - 40, y, QPen(Qt::black));
+    }
+    for (int x = 10; x < sceneSizeWidth; x += 40) {
+        scene->addLine(x, 10, x, sceneSizeHeight - 40,QPen(Qt::black));
     }
 }
 
