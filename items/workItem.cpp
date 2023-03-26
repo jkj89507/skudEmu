@@ -14,6 +14,16 @@ WorkItem::~WorkItem()
 {
 }
 
+int WorkItem::getWidth()
+{
+    return width;
+}
+
+int WorkItem::getHeight()
+{
+    return height;
+}
+
 QMap<QString, qreal> WorkItem::getPositionItem()
 {
     return positionItem;

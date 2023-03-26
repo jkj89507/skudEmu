@@ -8,9 +8,11 @@
 #include <QPainter>
 #include <qmath.h>
 #include "myscene.h"
-#include "workItem.h"
-#include "connItem.h"
+#include "items/workItem.h"
+#include "items/connItem.h"
 #include "buffer.h"
+#include "skudDialog.h"
+#include "utils.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -36,12 +38,15 @@ private slots:
     void on_addLine_clicked();
     void slot_encreseCounter();
     void slot_update_spendTime();
+    void getMapConnector(QMap<QString, bool> mapConnector);
+//    void openSkudDialog();
 
 private:
     Ui::Widget              *ui;
     MyScene                 *scene;
-    int sceneSizeWidth      = 1210;
-    int sceneSizeHeight     = 690;
+    SkudDialog              *skudDialog;
+    int sceneSizeWidth      = 1450;
+    int sceneSizeHeight     = 970;
     int amountOfItemsInRow  = 0;
     QTimer                  *timer;
     QMap<int, WorkItem*>    mapAccessByNumber;
@@ -58,11 +63,10 @@ private:
     void paintLine(qreal x1_coord, qreal y1_coord,
                    qreal x2_coord, qreal y2_coord);
     QString getTime();
-    void setActiveItem(WorkItem* item);
+    void setActiveItem(WorkItem* item, QMap<QString, bool> mapConnector);
     int getNumberItemFromList(WorkItem* item);
     int getNumberOfWorkItem(QString searchElement);
-    void setConnectorsPoint(WorkItem* item);
-    void drawWorkplace();
+    void setConnectorsPoint(WorkItem* item, QMap<QString, bool> mapConnector);
     void redraw();
 };
 #endif // WIDGET_H

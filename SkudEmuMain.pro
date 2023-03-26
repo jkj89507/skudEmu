@@ -8,21 +8,31 @@ CONFIG += c++
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+INCLUDEPATH +=
+./items \
+
 SOURCES += \
     buffer.cpp \
-    connItem.cpp \
     main.cpp \
     myscene.cpp \
+    skudDialog.cpp \
+    utils.cpp \
     widget.cpp \
-    workItem.cpp
+    ./items/workItem.cpp \
+    ./items/connItem.cpp \
+    ./items/connectorlineitem.cpp
 
 HEADERS += \
     buffer.h \
-    connItem.h \
     myscene.h \
+    skudDialog.h \
+    utils.h \
     widget.h \
-    workItem.h
+    ./items/workItem.h \
+    ./items/connItem.h \
+    ./items/connectorlineitem.h
 
-FORMS += widget.ui
+FORMS += widget.ui \
+    skudDialog.ui
 
 TARGET = SkudEmu

@@ -1,6 +1,5 @@
 #include "widget.h"
 #include "ui_widget.h"
-#include "connItem.h"
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -12,7 +11,7 @@ Widget::Widget(QWidget *parent)
     listAllItems.clear();
     scene = new MyScene(this);
     scene->clear();
-    QString path = "C:/Qt/workplace/skudEmu/wall.jpg"; // path to background image
+    QString path = "C:/Qt/workplace/skudEmu/images/wall.jpg"; // path to background image
     QPixmap backgroundImage(path);
     QBrush backgroundBrush(backgroundImage);
     scene->setBackgroundBrush(backgroundBrush);
@@ -23,7 +22,7 @@ Widget::Widget(QWidget *parent)
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff); /// Отключаем скроллбар по вертикали
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    this->drawWorkplace();
+    Utils::drawWorkplace(scene, sceneSizeWidth, sceneSizeHeight);
 
     amountOfItemsInRow = (sceneSizeWidth - 10) / 40;
     for (int rowIndex = 10; rowIndex < sceneSizeHeight; rowIndex += 40) {
@@ -62,8 +61,15 @@ void Widget::slot_readClick()
 
 void Widget::on_addSkud_clicked()
 {
-    WorkItem*   workItem = new WorkItem(nullptr, "Skud_1" + QString::number(getNumberOfWorkItem("Skud_1")), 50, 50, 1);
-    this->setActiveItem(workItem);
+    skudDialog = new SkudDialog(this);
+    connect(skudDialog, &SkudDialog::sentMapConnector, this, &Widget::getMapConnector);
+    skudDialog->exec();
+}
+
+void Widget::getMapConnector(QMap<QString, bool> mapConnector)
+{
+    WorkItem* workItem = new WorkItem(nullptr, "Skud_1_" + QString::number(getNumberOfWorkItem("Skud_1")), 30, 30, 1);
+    this->setActiveItem(workItem, mapConnector);
 }
 
 void Widget::on_addLine_clicked()
@@ -116,7 +122,7 @@ void Widget::getConnItem(ConnItem* connItem)
     }
 }
 
-void Widget::setActiveItem(WorkItem* item)
+void Widget::setActiveItem(WorkItem* item, QMap<QString, bool> mapConnector)
 {
     if (modeName.endsWith("Choose") && listAllItems.indexOf(saveLastClickItem) != -1)
     {
@@ -125,7 +131,7 @@ void Widget::setActiveItem(WorkItem* item)
         this->redraw();
         item->setPos(temp->x(), temp->y());
         listAllItems[lastClickItemIndex] = item;
-        this->setConnectorsPoint(item);
+        this->setConnectorsPoint(item, mapConnector);
         scene->addItem(item);
     } else {
         listAllItems.append(item);
@@ -157,64 +163,59 @@ int Widget::getNumberOfWorkItem(QString searchElement)
     return number;
 }
 
-void Widget::setConnectorsPoint(WorkItem* item)
+void Widget::setConnectorsPoint(WorkItem* item, QMap<QString, bool> mapConnector)
 {
     //TODO: изсенит проверяемые границы в ряде.
     // Баг: при установке в активную точку элемента в конце ряда -
     // устанавливает коннектор в начале следующего ряда
-    int currentIndexItem = this->getNumberItemFromList(item);
     item->setBuffer(new Buffer());
+    ConnItem* connectorItem;
     connect(item, &WorkItem::sentMessage, item->getBuffer(), &Buffer::getAccessToSendMessage);
-    if (currentIndexItem - amountOfItemsInRow >= 0) {
-        WorkItem* temp = listAllItems[currentIndexItem - amountOfItemsInRow];
-        disconnect(temp, &WorkItem::sentItem, this, &Widget::getItem);
-        ConnItem* connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Up",
+    if (mapConnector["Up"]) {
+        connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Up",
                                                10, 10,
                                                4, false);
         connect(item->getBuffer(), &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
         connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
         connectorItem->setMyOwnerWorkItem(item);
-        connectorItem->setPos(temp->x(), temp->y());
-        listAllItems[currentIndexItem - amountOfItemsInRow] = connectorItem;
+        connectorItem->setPos(item->x() , item->y() - item->getHeight() + 5);
+        listAllItems.append(connectorItem);
         scene->addItem(connectorItem);
     }
-    if (currentIndexItem + amountOfItemsInRow <= listAllItems.length()) {
-        WorkItem* temp = listAllItems[currentIndexItem + amountOfItemsInRow];
-        disconnect(temp, &WorkItem::sentItem, this, &Widget::getItem);
-        ConnItem* connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Down",
+
+    if (mapConnector["Down"]) {
+        connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Down",
                                                10, 10,
                                                4, false);
         connect(item->getBuffer(), &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
         connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
         connectorItem->setMyOwnerWorkItem(item);
-        connectorItem->setPos(temp->x(), temp->y());
-        listAllItems[currentIndexItem + amountOfItemsInRow] = connectorItem;
+        connectorItem->setPos(item->x(), item->y() + item->getHeight() - 5);
+        listAllItems.append(connectorItem);
         scene->addItem(connectorItem);
     }
-    if (currentIndexItem - 1 >= 0) {
-        WorkItem* temp = listAllItems[currentIndexItem - 1];
-        disconnect(temp, &WorkItem::sentItem, this, &Widget::getItem);
-        ConnItem* connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Left",
+
+    if (mapConnector["Left"]) {
+        connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Left",
                                                10, 10,
                                                4, false);
         connect(item->getBuffer(), &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
         connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
         connectorItem->setMyOwnerWorkItem(item);
-        connectorItem->setPos(temp->x(), temp->y());
-        listAllItems[currentIndexItem - 1] = connectorItem;
+        connectorItem->setPos(item->x() - item->getWidth() + 5, item->y());
+        listAllItems.append(connectorItem);
         scene->addItem(connectorItem);
     }
-    if (currentIndexItem + 1 <= listAllItems.length()) {
-        WorkItem* temp = listAllItems[currentIndexItem + 1];
-        disconnect(temp, &WorkItem::sentItem, this, &Widget::getItem);
-        ConnItem* connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Right",
+
+    if (mapConnector["Right"]) {
+        connectorItem = new ConnItem(nullptr, "Connector_" + item->getName() + "Right",
                                                10, 10,
                                                4, false);
         connect(item->getBuffer(), &Buffer::sentMessageToConnItem, connectorItem, &ConnItem::getMessageForSent);
         connect(connectorItem, &ConnItem::sentConnItem, this, &Widget::getConnItem);
         connectorItem->setMyOwnerWorkItem(item);;
-        connectorItem->setPos(temp->x(), temp->y());
-        listAllItems[currentIndexItem + 1] = connectorItem;
+        connectorItem->setPos(item->x() + item->getWidth() - 5, item->y());
+        listAllItems.append(connectorItem);
         scene->addItem(connectorItem);
     }
 }
@@ -224,22 +225,30 @@ void Widget::paintLine(qreal x1_coord, qreal y1_coord,
 {
     int width = qFabs(x2_coord - x1_coord);
     int height = qFabs(y2_coord - y1_coord);
-    WorkItem *lineItem;
-    if (width >= height) {
-        lineItem = new WorkItem(nullptr, "Line_" + QString::number(getNumberOfWorkItem("Line")),
-                                width, 6,
-                                0);
-        lineItem->setPos(x1_coord + width/2, y1_coord);
-        if (x1_coord >= x2_coord) {
-            lineItem->setTransform(QTransform().translate((width) * -1, 0));
+    int lengthLine = qSqrt(qPow(width, 2) + qPow(height, 2));
+    WorkItem *lineItem = new WorkItem(nullptr, "Line_" + QString::number(getNumberOfWorkItem("Line")),
+                                      lengthLine, 6,
+                                      0);
+    qreal degree = 0;
+    if (x1_coord <= x2_coord) {
+        if (y1_coord <= y2_coord) {
+            degree = qRadiansToDegrees(qAsin((qreal)height/(qreal)lengthLine));
+            lineItem->setRotation(degree);
+            lineItem->setPos(x1_coord + width/2, y1_coord + height/2);
+        } else {
+            degree = qRadiansToDegrees(qAsin((qreal)height/(qreal)lengthLine));
+            lineItem->setRotation(degree + 90);
+            lineItem->setPos(x1_coord + width/2, y1_coord - height/2);
         }
     } else {
-        lineItem = new WorkItem(nullptr, "Line_" + QString::number(getNumberOfWorkItem("Line")),
-                                6, height,
-                                0);
-        lineItem->setPos(x1_coord, y1_coord + height/2);
-        if (y1_coord >= y2_coord) {
-            lineItem->setTransform(QTransform().translate(0, (height) * -1));
+        if (y1_coord <= y2_coord) {
+            degree = qRadiansToDegrees(qAsin((qreal)height/(qreal)lengthLine));
+            lineItem->setRotation(degree + 90);
+            lineItem->setPos(x1_coord - width/2, y1_coord + height/2);
+        } else {
+            degree = qRadiansToDegrees(qAsin((qreal)height/(qreal)lengthLine));
+            lineItem->setRotation(degree);
+            lineItem->setPos(x1_coord - width/2, y1_coord - height/2);
         }
     }
     modeName = "";
@@ -276,16 +285,6 @@ QString Widget::getTime()
     return result;
 }
 
-void Widget::drawWorkplace()
-{
-    /*Draw lines*/
-    for (int y = 10; y < sceneSizeHeight; y += 40) {
-        scene->addLine(10, y, sceneSizeWidth - 40, y, QPen(Qt::black));
-    }
-    for (int x = 10; x < sceneSizeWidth; x += 40) {
-        scene->addLine(x, 10, x, sceneSizeHeight - 40,QPen(Qt::black));
-    }
-}
 
 void Widget::redraw()
 {

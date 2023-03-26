@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1920</width>
-    <height>860</height>
+    <height>1000</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,8 +18,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>1210</width>
-     <height>700</height>
+     <width>1440</width>
+     <height>960</height>
     </rect>
    </property>
    <property name="frameShadow">
@@ -32,9 +32,9 @@
   <widget class="QPushButton" name="addSkud">
    <property name="geometry">
     <rect>
-     <x>1280</x>
-     <y>10</y>
-     <width>83</width>
+     <x>1650</x>
+     <y>20</y>
+     <width>201</width>
      <height>29</height>
     </rect>
    </property>
@@ -56,9 +56,9 @@
   <widget class="QPushButton" name="addSkud_2">
    <property name="geometry">
     <rect>
-     <x>1280</x>
-     <y>50</y>
-     <width>83</width>
+     <x>1650</x>
+     <y>60</y>
+     <width>201</width>
      <height>29</height>
     </rect>
    </property>
@@ -80,9 +80,9 @@
   <widget class="QPushButton" name="addLine">
    <property name="geometry">
     <rect>
-     <x>1280</x>
-     <y>90</y>
-     <width>83</width>
+     <x>1650</x>
+     <y>100</y>
+     <width>201</width>
      <height>29</height>
     </rect>
    </property>

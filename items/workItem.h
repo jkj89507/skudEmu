@@ -17,6 +17,8 @@ public:
              int width = 30, int height = 30,
              int color = 1, bool isRemovable = true);
     ~WorkItem();
+    int getWidth();
+    int getHeight();
     QMap<QString, qreal> getPositionItem();
     QString getName();
     void getMessage(QString message);
