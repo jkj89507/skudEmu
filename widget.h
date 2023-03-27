@@ -11,7 +11,7 @@
 #include "items/workItem.h"
 #include "items/connItem.h"
 #include "buffer.h"
-#include "skudDialog.h"
+#include "connectorDialog.h"
 #include "utils.h"
 
 QT_BEGIN_NAMESPACE
@@ -34,7 +34,7 @@ public slots:
 
 private slots:
     void on_addSkud_clicked();
-//    void on_addSkud_2_clicked();
+    void on_addZone_clicked();
     void on_addLine_clicked();
     void slot_encreseCounter();
     void slot_update_spendTime();
@@ -44,7 +44,7 @@ private slots:
 private:
     Ui::Widget              *ui;
     MyScene                 *scene;
-    SkudDialog              *skudDialog;
+    ConnectorDialog         *connDialog;
     int sceneSizeWidth      = 1450;
     int sceneSizeHeight     = 970;
     int amountOfItemsInRow  = 0;
@@ -59,14 +59,18 @@ private:
     WorkItem*               saveLastClickItem;
     ConnItem*               saveLastClickConnItem;
     QList<ConnItem *>       listLastConnectors;
+    QMap<QString, bool>     mapConnector;
 
-    void paintLine(qreal x1_coord, qreal y1_coord,
+    void addSkud();
+    void addZone(qreal x1_coord, qreal y1_coord,
+                 qreal x2_coord, qreal y2_coord);
+    void addLine(qreal x1_coord, qreal y1_coord,
                    qreal x2_coord, qreal y2_coord);
+    void updateMapConnector();
     QString getTime();
-    void setActiveItem(WorkItem* item, QMap<QString, bool> mapConnector);
     int getNumberItemFromList(WorkItem* item);
     int getNumberOfWorkItem(QString searchElement);
-    void setConnectorsPoint(WorkItem* item, QMap<QString, bool> mapConnector);
+    void setConnectors(WorkItem* item, QMap<QString, bool> mapConnector);
     void redraw();
 };
 #endif // WIDGET_H

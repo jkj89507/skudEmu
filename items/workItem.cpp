@@ -84,38 +84,46 @@ void WorkItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
         case 0:
         {
             painter->setBrush(QColor(3, 248, 252));
+            painter->drawPolygon(polygon);
             break;
         }
         case 1:
         {
         // Цвет СКУД
-            painter->setBrush(Qt::green);
+//            painter->setBrush(Qt::green);
+            painter->drawPolygon(polygon);
+            QPixmap pixmap("C:/Qt/workplace/skudEmu/images/skud.png");
+            painter->drawPixmap(-15, -15, 30, 30, pixmap);
             break;
         }
         case 2:
         {
-            painter->setBrush(Qt::blue);
+        // Цвет зоны
+            painter->setBrush(QColor(242, 201, 78, 180));
+            painter->drawPolygon(polygon);
             break;
         }
         case 3:
         {
         // Цвет Активной точки
             painter->setBrush(Qt::white);
+            painter->drawPolygon(polygon);
             break;
         }
         case 4:
         {
         // Цвет Коннектора точку
-            painter->setBrush(Qt::darkCyan);
+            painter->setBrush(QColor(66, 242, 245, 180));
+            painter->drawPolygon(polygon);
             break;
         }
         default:
         {
             painter->setBrush(Qt::black);
+            painter->drawPolygon(polygon);
             break;
         }
     }
-    painter->drawPolygon(polygon);
     Q_UNUSED(option);
     Q_UNUSED(widget);
 }

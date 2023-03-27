@@ -13,9 +13,9 @@ INCLUDEPATH +=
 
 SOURCES += \
     buffer.cpp \
+    connectorDialog.cpp \
     main.cpp \
     myscene.cpp \
-    skudDialog.cpp \
     utils.cpp \
     widget.cpp \
     ./items/workItem.cpp \
@@ -24,8 +24,8 @@ SOURCES += \
 
 HEADERS += \
     buffer.h \
+    connectorDialog.h \
     myscene.h \
-    skudDialog.h \
     utils.h \
     widget.h \
     ./items/workItem.h \
@@ -33,6 +33,6 @@ HEADERS += \
     ./items/connectorlineitem.h
 
 FORMS += widget.ui \
-    skudDialog.ui
+    connectorDialog.ui
 
 TARGET = SkudEmu
