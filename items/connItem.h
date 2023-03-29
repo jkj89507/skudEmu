@@ -18,17 +18,10 @@ public:
     QMap<QString, qreal> getPositionItem();
 
 public slots:
-
-//    void getMyNeighbour(ConnItem* neighbour);
-//    void getMessageFromWorkItem(QString message);
-//    void getMessageFromAnotherConnItem(QString message);
     void getMessageForSent(QString message);
 
 signals:
-//    void sentMessageToWorkItem(QString message);
-//    void sentMessageToAnotherConnItem(QString message);
     void sentConnItem(ConnItem* connItem);
-//    void sentMessage(QString message);
 
 private:
     WorkItem*       myOwner;

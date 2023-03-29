@@ -12,6 +12,7 @@ INCLUDEPATH +=
 ./items \
 
 SOURCES += \
+    agent.cpp \
     buffer.cpp \
     connectorDialog.cpp \
     main.cpp \
@@ -23,6 +24,7 @@ SOURCES += \
     ./items/connectorlineitem.cpp
 
 HEADERS += \
+    agent.h \
     buffer.h \
     connectorDialog.h \
     myscene.h \

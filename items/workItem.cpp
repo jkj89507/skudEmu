@@ -30,6 +30,10 @@ QString WorkItem::getName() {
 
 void WorkItem::getMessage(QString message) {
     qInfo() << idWorkItem << " getMessage: " << message;
+    if (idWorkItem.contains("Crm"))
+    {
+        emit sentMessage(message);
+    }
 }
 
 void WorkItem::syncUpdateWithTimer() {
@@ -48,7 +52,7 @@ void WorkItem::syncUpdateWithTimer() {
     //    }
 }
 
-void WorkItem::setBuffer(Buffer * buffer) {
+void WorkItem::setBuffer(Buffer *buffer) {
     this -> buffer = buffer;
 }
 
@@ -69,48 +73,62 @@ void WorkItem::paint(QPainter * painter,
         QPoint((-1) * (width / 2), (height / 2));
     switch (color) {
         // Цвет линии
-    case 0: {
-        painter -> setBrush(QColor(3, 248, 252));
-        painter -> drawPolygon(polygon);
-        break;
-    }
-    case 1: {
-        // Цвет СКУД
-        //            painter->setBrush(Qt::green);
-        painter -> drawPolygon(polygon);
-        QPixmap pixmap("C:/Qt/workplace/skudEmu/images/skud.png");
-        painter -> drawPixmap(-15, -15, 30, 30, pixmap);
-        break;
-    }
-    case 2: {
-        // Цвет зоны
-        painter -> setBrush(QColor(242, 201, 78, 180));
-        painter -> drawPolygon(polygon);
-        break;
-    }
-    case 3: {
-        // Цвет Активной точки
-        painter -> setBrush(Qt::white);
-        painter -> drawPolygon(polygon);
-        break;
-    }
-    case 4: {
-        // Цвет Коннектора точку
-        painter -> setBrush(QColor(66, 242, 245, 180));
-        painter -> drawPolygon(polygon);
-        break;
-    }
-    case 5: {
-        // Цвет Конца линии
-        painter -> setBrush(Qt::yellow);
-        painter -> drawPolygon(polygon);
-        break;
-    }
-    default: {
-        painter -> setBrush(Qt::black);
-        painter -> drawPolygon(polygon);
-        break;
-    }
+        case 0: {
+            painter -> setBrush(QColor(3, 248, 252));
+            painter -> drawPolygon(polygon);
+            break;
+        }
+        case 1: {
+            // СКУД картика
+            painter -> drawPolygon(polygon);
+            QPixmap pixmap("C:/Qt/workplace/skudEmu/images/skud.png");
+            painter -> drawPixmap(-15, -15, 30, 30, pixmap);
+            break;
+        }
+        case 2: {
+            // Цвет зоны
+            painter -> setBrush(QColor(242, 201, 78, 180));
+            painter -> drawPolygon(polygon);
+            break;
+        }
+        case 3: {
+            // Цвет Активной точки
+            painter -> setBrush(Qt::white);
+            painter -> drawPolygon(polygon);
+            break;
+        }
+        case 4: {
+            // Цвет Коннектора точку
+            painter -> setBrush(QColor(66, 242, 245, 180));
+            painter -> drawPolygon(polygon);
+            break;
+        }
+        case 5: {
+            // Цвет Конца линии
+            painter -> setBrush(Qt::yellow);
+            painter -> drawPolygon(polygon);
+            break;
+        }
+        case 6: {
+            // CRM картика
+            painter -> drawPolygon(polygon);
+            QPixmap pixmap("C:/Qt/workplace/skudEmu/images/crm.png");
+            painter -> drawPixmap(-15, -15, 30, 30, pixmap);
+            break;
+        }
+        case 7: {
+            // БД картика
+            painter -> drawPolygon(polygon);
+            QPixmap pixmap("C:/Qt/workplace/skudEmu/images/database.png");
+            painter -> drawPixmap(-15, -15, 30, 30, pixmap);
+            break;
+        }
+
+        default: {
+            painter -> setBrush(Qt::black);
+            painter -> drawPolygon(polygon);
+            break;
+        }
     }
     Q_UNUSED(option);
     Q_UNUSED(widget);
@@ -133,12 +151,14 @@ void WorkItem::mousePressEvent(QGraphicsSceneMouseEvent * event) {
         positionItem["X"] = this -> x();
         qInfo() << "mousePressEvent Y: " << this -> y() << " X: " << this -> x();
         emit sentItem(this);
-        qInfo() << this -> getName() << " sent Message";
-        emit sentMessage("Hello from " + this -> getName());
-        //    if (isRemovable) {
-        //        this->setCursor(QCursor(Qt::ClosedHandCursor));
-        //        Q_UNUSED(event);
-        //    }
+        if (!idWorkItem.contains("Active")) {
+            qInfo() << this -> getName() << " sent Message";
+            emit sentMessage("Hello from " + this -> getName());
+            //    if (isRemovable) {
+            //        this->setCursor(QCursor(Qt::ClosedHandCursor));
+            //        Q_UNUSED(event);
+            //    }
+        }
     }
 }
 

@@ -13,6 +13,7 @@
 #include "buffer.h"
 #include "connectorDialog.h"
 #include "utils.h"
+#include "agent.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -34,8 +35,11 @@ public slots:
 
 private slots:
     void on_addSkud_clicked();
+    void on_addCrm_clicked();
+    void on_addDb_clicked();
     void on_addZone_clicked();
     void on_addLine_clicked();
+    void on_setPropertyButton_clicked();
     void slot_encreseCounter();
     void slot_update_spendTime();
     void getMapConnector(QMap<QString, bool> mapConnector);
@@ -60,12 +64,15 @@ private:
     ConnItem*               saveLastClickConnItem;
     QList<ConnItem *>       listLastConnectors;
     QMap<QString, bool>     mapConnector;
+    Agent                   *agent;
 
     void addSkud();
     void addZone(qreal x1_coord, qreal y1_coord,
                  qreal x2_coord, qreal y2_coord);
     void addLine(qreal x1_coord, qreal y1_coord,
                    qreal x2_coord, qreal y2_coord);
+    void addCrm();
+    void addDb();
     void updateMapConnector();
     QString getTime();
     int getNumberItemFromList(WorkItem* item);

@@ -23,11 +23,11 @@ Widget::Widget(QWidget * parent): QWidget(parent), ui(new Ui::Widget) {
     QPixmap addLineBackground("C:/Qt/workplace/skudEmu/images/line.png");
     ui -> addLine -> setIcon((QIcon) addLineBackground);
 
-    QPixmap addBdBackground("C:/Qt/workplace/skudEmu/images/database.png");
-    ui -> addBd -> setIcon((QIcon) addBdBackground);
+    QPixmap addDbBackground("C:/Qt/workplace/skudEmu/images/database.png");
+    ui -> addDb -> setIcon((QIcon) addDbBackground);
 
-    QPixmap addFiresignalBackground("C:/Qt/workplace/skudEmu/images/firesignal.png");
-    ui -> addFiresignal -> setIcon((QIcon) addFiresignalBackground);
+    QPixmap addCrmBackground("C:/Qt/workplace/skudEmu/images/crm.png");
+    ui -> addCrm -> setIcon((QIcon) addCrmBackground);
 
     ui -> graphicsView -> setRenderHint(QPainter::Antialiasing);
     ui -> graphicsView -> setRenderHint(QPainter::SmoothPixmapTransform);
@@ -79,6 +79,16 @@ void Widget::on_addSkud_clicked() {
     this -> addSkud();
 }
 
+void Widget::on_addCrm_clicked() {
+    this -> updateMapConnector();
+    this -> addCrm();
+}
+
+void Widget::on_addDb_clicked() {
+    this -> updateMapConnector();
+    this -> addDb();
+}
+
 void Widget::on_addZone_clicked() {
     this -> updateMapConnector();
     this -> addSkud();
@@ -94,6 +104,12 @@ void Widget::on_addLine_clicked() {
     counterClick = 0;
     listPoints.clear();
     qInfo() << "set mode: line";
+}
+
+void Widget::on_setPropertyButton_clicked() {
+    agent = new Agent();
+    agent->levelAccess = ui -> spinBox -> value();
+    agent->name = ui -> nameTextField -> toPlainText();
 }
 
 void Widget::updateMapConnector() {
@@ -147,7 +163,7 @@ void Widget::getConnItem(ConnItem * connItem) {
 }
 
 void Widget::addSkud() {
-    WorkItem * skud = new WorkItem(nullptr, "Skud_" + QString::number(getNumberOfWorkItem("Skud_")), 30, 30, 1);
+    WorkItem* skud = new WorkItem(nullptr, "Skud_" + QString::number(getNumberOfWorkItem("Skud_")), 30, 30, 1, false, true);
     if (modeName.endsWith("") && listAllItems.indexOf(saveLastClickItem) != -1) {
         int lastClickItemIndex = listAllItems.indexOf(saveLastClickItem);
         WorkItem * temp = listAllItems[lastClickItemIndex];
@@ -156,6 +172,32 @@ void Widget::addSkud() {
         listAllItems[lastClickItemIndex] = skud;
         this -> setConnectors(skud, this -> mapConnector);
         scene -> addItem(skud);
+    }
+}
+
+void Widget::addCrm() {
+    WorkItem* crm = new WorkItem(nullptr, "Crm_" + QString::number(getNumberOfWorkItem("Crm_")), 30, 30, 6, false, false);
+    if (modeName.endsWith("") && listAllItems.indexOf(saveLastClickItem) != -1) {
+        int lastClickItemIndex = listAllItems.indexOf(saveLastClickItem);
+        WorkItem * temp = listAllItems[lastClickItemIndex];
+        this -> redraw();
+        crm -> setPos(temp -> x(), temp -> y());
+        listAllItems[lastClickItemIndex] = crm;
+        this -> setConnectors(crm, this -> mapConnector);
+        scene -> addItem(crm);
+    }
+}
+
+void Widget::addDb() {
+    WorkItem* db = new WorkItem(nullptr, "Db_" + QString::number(getNumberOfWorkItem("Db_")), 30, 30, 7, false, false);
+    if (modeName.endsWith("") && listAllItems.indexOf(saveLastClickItem) != -1) {
+        int lastClickItemIndex = listAllItems.indexOf(saveLastClickItem);
+        WorkItem * temp = listAllItems[lastClickItemIndex];
+        this -> redraw();
+        db -> setPos(temp -> x(), temp -> y());
+        listAllItems[lastClickItemIndex] = db;
+        this -> setConnectors(db, this -> mapConnector);
+        scene -> addItem(db);
     }
 }
 

@@ -3,16 +3,11 @@
 ConnItem::ConnItem(QObject *parent, QString idWorkItem, int width, int height, int color, bool isRemovable)
     : WorkItem(parent, idWorkItem,
                width, height,
-               color, isRemovable)
-{
-}
+               color, isRemovable){}
 
-ConnItem::~ConnItem()
-{
-}
+ConnItem::~ConnItem(){}
 
-QMap<QString, qreal> ConnItem::getPositionItem()
-{
+QMap<QString, qreal> ConnItem::getPositionItem() {
     return positionItem;
 }
 
@@ -32,8 +27,7 @@ WorkItem* ConnItem::getOwner() {
     return myOwner;
 }
 
-void ConnItem::getMessageForSent(QString message)
-{
+void ConnItem::getMessageForSent(QString message) {
     if (myNeighbour != nullptr) {
         myNeighbour->myOwner->getMessage(message);
     }
@@ -41,8 +35,7 @@ void ConnItem::getMessageForSent(QString message)
 }
 
 
-void ConnItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
+void ConnItem::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     /* При нажатии мышью на графический элемент
      * заменяем курсор на руку, которая держит этот элемента
      * */
