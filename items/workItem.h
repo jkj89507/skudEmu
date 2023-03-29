@@ -15,7 +15,8 @@ class WorkItem : public QObject, public QGraphicsItem
 public:
     WorkItem(QObject *parent = nullptr, QString idWorkItem = "Dafault",
              int width = 30, int height = 30,
-             int color = 1, bool isRemovable = true);
+             int color = 1, bool isRemovable = true,
+             bool isClickable = true);
     ~WorkItem();
     int getWidth();
     int getHeight();
@@ -40,6 +41,7 @@ private:
     int             height; //Пармаетр ширины
     int             color; //Пармаетр цвета
     bool            isRemovable; //Возможность перетаксивать
+    bool            isClickable; //Возможность кликабельности
     QRectF          boundingRect() const; //Отрисовка границ
     QMap<QString, qreal> positionItem;
     Buffer*         buffer;

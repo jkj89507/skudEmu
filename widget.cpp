@@ -23,6 +23,12 @@ Widget::Widget(QWidget * parent): QWidget(parent), ui(new Ui::Widget) {
     QPixmap addLineBackground("C:/Qt/workplace/skudEmu/images/line.png");
     ui -> addLine -> setIcon((QIcon) addLineBackground);
 
+    QPixmap addBdBackground("C:/Qt/workplace/skudEmu/images/database.png");
+    ui -> addBd -> setIcon((QIcon) addBdBackground);
+
+    QPixmap addFiresignalBackground("C:/Qt/workplace/skudEmu/images/firesignal.png");
+    ui -> addFiresignal -> setIcon((QIcon) addFiresignalBackground);
+
     ui -> graphicsView -> setRenderHint(QPainter::Antialiasing);
     ui -> graphicsView -> setRenderHint(QPainter::SmoothPixmapTransform);
     ui -> graphicsView -> setScene(scene);
@@ -105,7 +111,6 @@ void Widget::slot_encreseCounter() {
         qreal x2 = listLastConnectors[listLastConnectors.length() - 1] -> getPositionItem()["X"];
         qreal y2 = listLastConnectors[listLastConnectors.length() - 1] -> getPositionItem()["Y"];
         listLastConnectors[listLastConnectors.length() - 2] -> setMyNeighbour(listLastConnectors[listLastConnectors.length() - 1]);
-        listLastConnectors[listLastConnectors.length() - 1] -> setMyNeighbour(listLastConnectors[listLastConnectors.length() - 2]);
         listLastConnectors.clear();
         this -> addLine(x1, y1, x2, y2);
         counterClick = 0;
@@ -258,26 +263,45 @@ void Widget::addLine(qreal x1_coord, qreal y1_coord,
     WorkItem * lineItem = new WorkItem(nullptr, "Line_" + QString::number(getNumberOfWorkItem("Line")),
         lengthLine, 6,
         0);
+    WorkItem * petalItem = new WorkItem(nullptr, "Line_" + QString::number(getNumberOfWorkItem("Line")) + "_petalItem",
+        15, 15,
+        5);
     qreal degree = 0;
     if (x1_coord <= x2_coord) {
         if (y1_coord <= y2_coord) {
             degree = qRadiansToDegrees(qAsin((qreal) height / (qreal) lengthLine));
             lineItem -> setRotation(degree);
             lineItem -> setPos(x1_coord + width / 2, y1_coord + height / 2);
+            lineItem -> setZValue(std::numeric_limits < qreal > ::min());
+
+            petalItem -> setRotation(degree * 2);
+            petalItem ->setPos(x2_coord, y2_coord);
         } else {
             degree = qRadiansToDegrees(qAsin((qreal) height / (qreal) lengthLine));
-            lineItem -> setRotation(degree + 90);
+            lineItem -> setRotation(degree * (-1));
             lineItem -> setPos(x1_coord + width / 2, y1_coord - height / 2);
+            lineItem -> setZValue(std::numeric_limits < qreal > ::min());
+
+            petalItem -> setRotation(degree * (-1) * 2);
+            petalItem ->setPos(x2_coord, y2_coord);
         }
     } else {
         if (y1_coord <= y2_coord) {
             degree = qRadiansToDegrees(qAsin((qreal) height / (qreal) lengthLine));
-            lineItem -> setRotation(degree + 90);
+            lineItem -> setRotation(degree * (-1));
             lineItem -> setPos(x1_coord - width / 2, y1_coord + height / 2);
+            lineItem -> setZValue(std::numeric_limits < qreal > ::min());
+
+            petalItem -> setRotation(degree * (-1) * 2);
+            petalItem ->setPos(x2_coord, y2_coord);
         } else {
             degree = qRadiansToDegrees(qAsin((qreal) height / (qreal) lengthLine));
             lineItem -> setRotation(degree);
             lineItem -> setPos(x1_coord - width / 2, y1_coord - height / 2);
+            lineItem -> setZValue(std::numeric_limits < qreal > ::min());
+
+            petalItem -> setRotation(degree * 2);
+            petalItem ->setPos(x2_coord, y2_coord);
         }
     }
     modeName = "";
@@ -286,6 +310,7 @@ void Widget::addLine(qreal x1_coord, qreal y1_coord,
     qInfo() << "set mode: empty";
     listAllItems.append(lineItem);
     scene -> addItem(lineItem);
+    scene -> addItem(petalItem);
     this -> redraw();
 }
 
