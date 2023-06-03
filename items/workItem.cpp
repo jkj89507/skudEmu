@@ -30,9 +30,9 @@ QString WorkItem::getName() {
 
 void WorkItem::getMessage(QString message) {
     qInfo() << idWorkItem << " getMessage: " << message;
-    if (idWorkItem.contains("Crm"))
-    {
-        emit sentMessage(message);
+    this->message = message;
+    if (idWorkItem.contains("Crm")) {
+        emit sentMessage(this->message);
     }
 }
 
@@ -81,7 +81,7 @@ void WorkItem::paint(QPainter * painter,
         case 1: {
             // СКУД картика
             painter -> drawPolygon(polygon);
-            QPixmap pixmap("C:/Qt/workplace/skudEmu/images/skud.png");
+            QPixmap pixmap("C:/Users/JKJ89507/Desktop/workplace/5.2kurs/diplom/skudEmu/images/skud.png");
             painter -> drawPixmap(-15, -15, 30, 30, pixmap);
             break;
         }
@@ -112,14 +112,14 @@ void WorkItem::paint(QPainter * painter,
         case 6: {
             // CRM картика
             painter -> drawPolygon(polygon);
-            QPixmap pixmap("C:/Qt/workplace/skudEmu/images/crm.png");
+            QPixmap pixmap("C:/Users/JKJ89507/Desktop/workplace/5.2kurs/diplom/skudEmu/images/crm.png");
             painter -> drawPixmap(-15, -15, 30, 30, pixmap);
             break;
         }
         case 7: {
             // БД картика
             painter -> drawPolygon(polygon);
-            QPixmap pixmap("C:/Qt/workplace/skudEmu/images/database.png");
+            QPixmap pixmap("C:/Users/JKJ89507/Desktop/workplace/5.2kurs/diplom/skudEmu/images/database.png");
             painter -> drawPixmap(-15, -15, 30, 30, pixmap);
             break;
         }

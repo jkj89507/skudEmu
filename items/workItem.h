@@ -45,6 +45,7 @@ private:
     QRectF          boundingRect() const; //Отрисовка границ
     QMap<QString, qreal> positionItem;
     Buffer*         buffer;
+    QString         message;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget); //Отрисовка элемента
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event); //Событие перетаскивание мышкой элемента
     void mousePressEvent(QGraphicsSceneMouseEvent *event); //Событие нажатие мышкой на элемент

@@ -49,8 +49,8 @@ private:
     Ui::Widget              *ui;
     MyScene                 *scene;
     ConnectorDialog         *connDialog;
-    int sceneSizeWidth      = 1450;
-    int sceneSizeHeight     = 970;
+    int sceneSizeWidth      = 1050;
+    int sceneSizeHeight     = 690;
     int amountOfItemsInRow  = 0;
     QTimer                  *timer;
     QMap<int, WorkItem*>    mapAccessByNumber;

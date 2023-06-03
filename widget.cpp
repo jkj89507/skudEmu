@@ -10,23 +10,23 @@ Widget::Widget(QWidget * parent): QWidget(parent), ui(new Ui::Widget) {
     scene = new MyScene(this);
     scene -> clear();
 
-    QPixmap backgroundImage("C:/Qt/workplace/skudEmu/images/wall.jpg");
+    QPixmap backgroundImage("C:/Users/JKJ89507/Desktop/workplace/5.2kurs/diplom/skudEmu/images/wall.jpg");
     QBrush backgroundBrush(backgroundImage);
     scene -> setBackgroundBrush(backgroundBrush);
 
-    QPixmap addSkudBackground("C:/Qt/workplace/skudEmu/images/skud.png");
+    QPixmap addSkudBackground("C:/Users/JKJ89507/Desktop/workplace/5.2kurs/diplom/skudEmu/images/skud.png");
     ui -> addSkud -> setIcon((QIcon) addSkudBackground);
 
-    QPixmap addZoneBackground("C:/Qt/workplace/skudEmu/images/zone.png");
+    QPixmap addZoneBackground("C:/Users/JKJ89507/Desktop/workplace/5.2kurs/diplom/skudEmu/images/zone.png");
     ui -> addZone -> setIcon((QIcon) addZoneBackground);
 
-    QPixmap addLineBackground("C:/Qt/workplace/skudEmu/images/line.png");
+    QPixmap addLineBackground("C:/Users/JKJ89507/Desktop/workplace/5.2kurs/diplom/skudEmu/images/line.png");
     ui -> addLine -> setIcon((QIcon) addLineBackground);
 
-    QPixmap addDbBackground("C:/Qt/workplace/skudEmu/images/database.png");
+    QPixmap addDbBackground("C:/Users/JKJ89507/Desktop/workplace/5.2kurs/diplom/skudEmu/images/database.png");
     ui -> addDb -> setIcon((QIcon) addDbBackground);
 
-    QPixmap addCrmBackground("C:/Qt/workplace/skudEmu/images/crm.png");
+    QPixmap addCrmBackground("C:/Users/JKJ89507/Desktop/workplace/5.2kurs/diplom/skudEmu/images/crm.png");
     ui -> addCrm -> setIcon((QIcon) addCrmBackground);
 
     ui -> graphicsView -> setRenderHint(QPainter::Antialiasing);
